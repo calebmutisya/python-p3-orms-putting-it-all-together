@@ -12,8 +12,10 @@ class Dog:
         self.name=name
         self.breed=breed
 
-    def create_table(self):
-        src="""
+
+    @classmethod
+    def create_table(cls):
+        sql="""
             CREATE TABLE IF NOT EXISTS dogs (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
@@ -21,13 +23,16 @@ class Dog:
             )
       
           """
+        CURSOR.execute(sql)
+        CONN.commit()
 
-    def drop_table(self):
-        src="""
+    @classmethod
+    def drop_table(cls):
+        sql="""
             DROP TABLE IF EXISTS dogs
         """
         # Execute the SQL statement
-        CURSOR.execute(src)
+        CURSOR.execute(sql)
         # Commit the changes
         CONN.commit()
 
@@ -57,8 +62,8 @@ class Dog:
     def get_all(cls):
         sql="""SELECT * FROM dogs"""
 
-        all= CURSOR.execute(sql).fetchall()
-        cls.all=[cls.new_from_db(row) for row in all]
+        all_dogs= CURSOR.execute(sql).fetchall()
+        cls.all=[cls.new_from_db(row) for row in all_dogs]
 
     @classmethod
     def find_by_name(cls, name):
@@ -82,3 +87,4 @@ class Dog:
         """
         CURSOR.execute(sql, (self.name, self.breed, self.id))
         CONN.commit()
+
